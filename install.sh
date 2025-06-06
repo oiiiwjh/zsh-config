@@ -1,7 +1,8 @@
 #!/bin/bash
 # install.sh
 
-CONFIG_DIR=$(cd "$(dirname "$0")" && pwd)
+# CONFIG_DIR=$(cd "$(dirname "$0")" && pwd)
+CONFIG_DIR='/home/wjh/zsh-config'
 ZSH_CUSTOM_DIR=~/.oh-my-zsh/custom
 
 # 安装 Oh My Zsh（如果未安装）
@@ -55,6 +56,18 @@ install_themes() {
     git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM_DIR/themes/spaceship-prompt" --depth=1
     ln -s "$ZSH_CUSTOM_DIR/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM_DIR/themes/spaceship.zsh-theme"
   fi
+  cp $CONFIG_DIR/custom/themes/spaceship.zsh $ZSH_CUSTOM_DIR/themes/spaceship-prompt/spaceship.zsh
+}
+# 安装主题（修改为使用仓库中的文件）
+install_themes_pkg() {
+  echo "安装主题..."
+  
+  # 创建主题目录
+  mkdir -p "$ZSH_CUSTOM_DIR/themes"
+  
+  # 链接仓库中的Spaceship主题文件
+  # ln -sf "$CONFIG_DIR/custom/themes/spaceship.zsh-theme" "$ZSH_CUSTOM_DIR/themes/spaceship.zsh-theme"
+  cp -r "$CONFIG_DIR/custom/themes/spaceship-prompt/" "$ZSH_CUSTOM_DIR/themes/spaceship-prompt/"
 }
 
 # 链接配置文件
@@ -69,6 +82,7 @@ main() {
   backup
   install_plugins
   install_themes
+  # install_themes_pkg # 从仓库中安装主题
   link_config
   echo "安装完成！请重启终端或执行 'source ~/.zshrc'"
 }
