@@ -20,18 +20,40 @@ backup() {
   done
 }
 
-# 拉取开源主题（以 Spaceship 为例）
-install_theme() {
-  echo "安装 Spaceship 主题..."
-  git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
+# 安装所有必要的插件
+install_plugins() {
+  echo "安装插件..."
+  
+  # 创建插件目录
+  mkdir -p "$ZSH_CUSTOM_DIR/plugins"
+  
+  # 安装 zsh-autosuggestions
+  if [ ! -d "$ZSH_CUSTOM_DIR/plugins/zsh-autosuggestions" ]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM_DIR/plugins/zsh-autosuggestions"
+  fi
+  
+  # 安装 zsh-syntax-highlighting
+  if [ ! -d "$ZSH_CUSTOM_DIR/plugins/zsh-syntax-highlighting" ]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM_DIR/plugins/zsh-syntax-highlighting"
+  fi
+  
+  # 安装 conda-zsh-completion
+  if [ ! -d "$ZSH_CUSTOM_DIR/plugins/conda-zsh-completion" ]; then
+    git clone https://github.com/esc/conda-zsh-completion "$ZSH_CUSTOM_DIR/plugins/conda-zsh-completion"
+  fi
 }
 
-# 安装自定义插件（非开源）
-install_custom_plugins() {
-  if [ -d "$CONFIG_DIR/plugins" ]; then
-    echo "安装自定义插件..."
-    mkdir -p "$ZSH_CUSTOM_DIR/plugins"
-    cp -r "$CONFIG_DIR/plugins/"* "$ZSH_CUSTOM_DIR/plugins/"
+# 安装主题
+install_themes() {
+  echo "安装主题..."
+  
+  # 创建主题目录
+  mkdir -p "$ZSH_CUSTOM_DIR/themes"
+  
+  # 安装 Spaceship 主题
+  if [ ! -d "$ZSH_CUSTOM_DIR/themes/spaceship-prompt" ]; then
+    git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM_DIR/themes/spaceship-prompt" --depth=1
+    ln -s "$ZSH_CUSTOM_DIR/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM_DIR/themes/spaceship.zsh-theme"
   fi
 }
 
@@ -45,11 +67,10 @@ link_config() {
 # 主函数
 main() {
   backup
-  install_theme          # 自动拉取开源主题
-  install_custom_plugins # 安装自定义插件（如有）
+  install_plugins
+  install_themes
   link_config
   echo "安装完成！请重启终端或执行 'source ~/.zshrc'"
-  echo "注意：首次使用 Spaceship 需运行 'spaceship configure' 配置字体"
 }
 
 main
